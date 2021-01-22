@@ -1,0 +1,79 @@
+Face Tracking Mesh Steps
+
+- Download/Import GoogleARCore sdk from - https://github.com/google-ar/arcore-android-sdk
+
+- Import AR Core Device in Hierarchy from Assets > GoogleARCore > Perfabs and delete Main Camera
+
+- Create a new script (FaceMask) and attach it to empty GO(name it ManagerFaceMask)
+
+- Create a new session (Face in Project (Right Click > Create > Google AR Core > SessionConfig)
+
+	- Inspector of FacesessionConfig 
+	- Light Estimation Mode - Ambient Intensity 
+	- Augmented face Mode - Mesh
+
+
+	- Inspector of ARCore Device
+	- Device Camera Direction - Front Facing
+	- Session Config - FaceSessionConfig (Created by us)
+
+- Create two new materials (Texture and occluder)
+
+	- Inspector of texture 
+	- Shader > Unlit > Transparent
+
+	- Inspector of occluder
+	- Shader > ARCore > AugmentedFaceoccluder 
+	 
+- In Hierarchy, create empty GO (FaceMask) and two child (Texture and Occluder)
+
+- On both texture and Occluder, add Mesh Filter, Mesh renderer and AR Core Augmented Face Mesh Filter script and check the Auto Bind
+
+- Drag texture and Occluder material of Texture and Occluder respectively.
+
+- In project > search canonical face and drag in hierarchy
+
+- The object that you want to lay on facemesh, add it as a child of Occluder in hierarchy
+
+- To occlude a necklace, i have added a cylinder and used a applied a shader on it to occlude the neclace behind it
+
+- To occlude, create a new material > Inspector > Shader > Mask Shader, and then drag and drop it on cylinder.
+
+- Import Lean Touch for Drag, Rotate and move
+
+- Right Click in hierarchy > Lean > Touch
+
+- Now go to the object that you want to manipulate and add scripts on it, attach camera to the slots
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+FaceMask Script
+---------------------------------------------------------------------------------------------------------------------------------------------------------------
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using GoogleARCore;
+
+public class FaceMask : MonoBehaviour
+{
+    public GameObject faceMask;
+    private List<AugmentedFace> _tempFaceMask = new List<AugmentedFace>();
+
+    
+    void Update()
+    {
+        Session.GetTrackables(_tempFaceMask, TrackableQueryFilter.All);
+
+        if (_tempFaceMask.Count == 0)
+        {
+            faceMask.SetActive(false);
+        }
+        else
+        {
+            faceMask.SetActive(true);
+        }
+    }
+}
+
+
+ 
